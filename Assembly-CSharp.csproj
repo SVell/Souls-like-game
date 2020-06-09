@@ -72,6 +72,7 @@
      <Compile Include="Assets\Samples\Cinemachine\2.5.0\Cinemachine Example Scenes\Shared\Scripts\PlayerMove.cs" />
      <Compile Include="Assets\Samples\Cinemachine\2.5.0\Cinemachine Example Scenes\Shared\Scripts\PlayerMoveOnSphere.cs" />
      <Compile Include="Assets\Samples\Cinemachine\2.5.0\Cinemachine Example Scenes\Shared\Scripts\PlayerMovePhysics.cs" />
+     <Compile Include="Assets\Scripts\Unit.cs" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>D:/Unity/Souls-like game/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>

@@ -46,8 +46,13 @@ public class PlayerMovement : MonoBehaviour
     private float resetTime = 1.2f;
     private float attackTime;
     public float attackOffset = 3f;
+    // Attack damage and position
     public Transform attackPos;
     public LayerMask whatIsEnemy;
+    public float attackRange = 0.5f;
+    private int lightDamage = 20;
+    private int heavyDamage = 40;
+
 
     [Header("Other")] 
     private PlayerStats playerStats;
@@ -60,6 +65,22 @@ public class PlayerMovement : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        if (!PlayerStats.dead)
+        {
+            Act();
+        }
+        else
+        {
+            anim.SetBool("Dead",true);
+        }
+        
+        // Gravity
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
+    }
+
+    private void Act()
     {
         if (playerStats.stamina <= 0)
         {
@@ -88,12 +109,8 @@ public class PlayerMovement : MonoBehaviour
         {
             Attack();
         }
-        
-        // Gravity
-        velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
     }
-
+    
     private void Walk()
     {
         
@@ -152,6 +169,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            speed = 4;
             anim.SetInteger("MoveStates",0);
             moving = false;
         }
@@ -180,6 +198,21 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetButtonDown("Fire1") && comboNum  < 2 && attackTime < 0 && playerStats.stamina > 20)
         {
+            // Attack damage
+            Collider[] enemies = Physics.OverlapSphere(attackPos.position,attackRange,whatIsEnemy);
+            foreach (Collider x in enemies)
+            {
+                if (comboNum == 0)
+                {
+                    x.gameObject.GetComponent<Unit>().TakeDamage(lightDamage);
+                }
+                else
+                {
+                    x.gameObject.GetComponent<Unit>().TakeDamage(heavyDamage);
+                }
+            }
+            
+            // ComboWombo
             attackTime = attackOffset / 6;
             playerStats.stamina -= 40;
             StartCoroutine(DealDanage());
@@ -218,5 +251,11 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         Debug.Log("Attack");
     }
-    
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attackPos.position,attackRange);
+    }
 }
